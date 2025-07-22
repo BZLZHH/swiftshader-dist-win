@@ -29,7 +29,8 @@ jobs:
       - name: Collect code sources unique identifiers
         id: collectuids
         run: |
-          echo "::set-output name=artifactuid::$(swiftshader-dist-win\\buildscript\\ci\\ci.cmd collectuids)"
+          echo "artifactuid=subzero-$(git -C swiftshader rev-parse --short=8 HEAD)-$(git -C swiftshader-dist-win rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
+
 
       - name: Cache build assets
         id: cache
