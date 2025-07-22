@@ -45,12 +45,12 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: swiftshader-${{ steps.collectuids.outputs.artifactuid }}-${{ matrix.backend }}.7z
+          name: swiftshader-${{ matrix.backend }}.7z
           path: swiftshader-dist-win\swiftshader-${{ steps.collectuids.outputs.artifactuid }}-${{ matrix.backend }}.7z
 
-      - name: Publish build identification document
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-sources-unique-identifiers.html
-          path: swiftshader-dist-win\dist\buildinfo\sources-unique-identifiers.html
+      #- name: Publish build identification document
+      #  if: steps.cache.outputs.cache-hit != 'true'
+      #  uses: actions/upload-artifact@v4
+      #   with:
+      #    name: code-sources-unique-identifiers.html
+      #    path: swiftshader-dist-win\dist\buildinfo\sources-unique-identifiers.html
