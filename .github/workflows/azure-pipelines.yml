@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: swiftshader-${{ matrix.backend }}.7z
-          path: swiftshader-dist-win\swiftshader-${{ steps.collectuids.outputs.artifactuid }}-${{ matrix.backend }}.7z
+          path: swiftshader-dist-win\**
 
       #- name: Publish build identification document
       #  if: steps.cache.outputs.cache-hit != 'true'
