@@ -1,0 +1,46 @@
+pr: none
+trigger: none
+schedules:
+  - cron: '0 0,8,16 * * *'
+    branches:
+      include:
+      - master
+    always: true
+jobs:
+  - job: swiftshader
+    timeoutInMinutes: 360
+    pool:
+      vmImage: windows-latest
+    strategy:
+      maxParallel: 2
+      matrix:
+        LLVM10:
+          REACTOR_BACKEND: LLVM10
+        subzero:
+          REACTOR_BACKEND: subzero
+    steps:
+      - checkout: none
+      - script: |
+          git clone --depth=1 https://swiftshader.googlesource.com/SwiftShader swiftshader
+          git clone https://github.com/pal1000/swiftshader-dist-win.git swiftshader-dist-win
+          cd swiftshader-dist-win
+          git checkout 1.0.7.4
+          cd ..
+        displayName: Get sources
+      - script: swiftshader-dist-win\buildscript\ci\ci.cmd collectuids
+        displayName: Collect code sources unique identifiers
+      - task: Cache@2
+        inputs:
+          key: $(srcswiftshader) | $(distswiftshader)
+          path: swiftshader-dist-win\buildscript\ci\assets
+        displayName: Set a flag if build is up-to-date
+      - script: swiftshader-dist-win\buildscript\ci\ci.cmd $(REACTOR_BACKEND)
+        displayName: Build swiftshader
+      - publish: swiftshader-dist-win\swiftshader-$(artifactuid)-$(REACTOR_BACKEND).7z
+        artifact: swiftshader-$(artifactuid)-$(REACTOR_BACKEND).7z
+        condition: eq(variables['uptodatebuild'], '0')
+        displayName: Publish binaries package
+      - publish: swiftshader-dist-win\dist\buildinfo\sources-unique-identifiers.html
+        artifact: code-sources-unique-identifiers.html
+        condition: eq(variables['uptodatebuild'], '0')
+        displayName: Publish build identification document
